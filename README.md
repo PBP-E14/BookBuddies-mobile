@@ -63,3 +63,6 @@ Untuk akun admin atau superuser dapat menggunakan akun berikut:
 username: admin
 
 password: admin
+
+Alur pengintegrasian dengan web service untuk terhubung dengan aplikasi web yang sudah dibuat saat Proyek Tengah Semester.
+Link repository PTS: https://github.com/PBP-E14/book-buddies.git
