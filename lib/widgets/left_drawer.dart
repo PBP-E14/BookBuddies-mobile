@@ -1,4 +1,5 @@
 import 'package:book_buddies_mobile/homepage.dart';
+import 'package:book_buddies_mobile/user/profile.dart';
 import 'package:flutter/material.dart';
 
 class LeftDrawer extends StatelessWidget {
@@ -44,6 +45,18 @@ class LeftDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MyHomePage(),
+                  ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.account_circle_rounded),
+            title: const Text('User Profile Page'),
+            // Bagian redirection ke MyHomePage
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfilePage(),
                   ));
             },
           ),
