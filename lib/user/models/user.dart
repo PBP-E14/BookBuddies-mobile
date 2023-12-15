@@ -20,21 +20,13 @@ class User {
     });
 
     factory User.fromJson(Map<String, dynamic> json) {
-        print("Parsing User: $json");
         var user = User(
             model: json["model"],
             pk: json["pk"],
             fields: Fields.fromJson(json["fields"]),
         );
-        print("Parsed User: ${user.toJson()}");
         return user;
     }
-
-    // factory User.fromJson(Map<String, dynamic> json) => User(
-    //     model: json["model"],
-    //     pk: json["pk"],
-    //     fields: Fields.fromJson(json["fields"]),
-    // );
 
     Map<String, dynamic> toJson() => {
         "model": model,
@@ -65,7 +57,6 @@ class Fields {
     });
 
     factory Fields.fromJson(Map<String, dynamic> json) {
-        print("Parsing Fields: $json");
 
         // Create the fields object
         var fields = Fields(
@@ -79,20 +70,8 @@ class Fields {
             historyBooks: List<int>.from(json["history_books"].map((x) => x)),
         );
 
-        print("Parsed Fields: ${fields.toJson()}");
         return fields;
     }
-
-  //   factory Fields.fromJson(Map<String, dynamic> json) => Fields(
-  //     username: json["username"],
-  //     email: json["email"],
-  //     gender: json["gender"],
-  //     birthDate: json["birth_date"] == null ? null : DateTime.parse(json["birth_date"]),
-  //     phoneNumber: json["phone_number"],
-  //     address: json["address"],
-  //     bio: json["bio"],
-  //     historyBooks: List<int>.from(json["history_books"].map((x) => x)),
-  // );
 
     Map<String, dynamic> toJson() => {
         "username": username,

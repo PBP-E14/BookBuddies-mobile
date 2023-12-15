@@ -10,6 +10,11 @@ List<Book> bookFromJson(String str) =>
 String bookToJson(List<Book> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
+List<Book> parseBooks(String jsonStr) {
+  final parsed = json.decode(jsonStr).cast<Map<String, dynamic>>();
+  return parsed.map<Book>((json) => Book.fromJson(json)).toList();
+}
+
 class Book {
   Model model;
   int pk;
@@ -21,11 +26,19 @@ class Book {
     required this.fields,
   });
 
-  factory Book.fromJson(Map<String, dynamic> json) => Book(
-        model: modelValues.map[json["model"]]!,
-        pk: json["pk"],
-        fields: Fields.fromJson(json["fields"]),
-      );
+  factory Book.fromJson(Map<String, dynamic> json) {
+  return Book(
+    model: modelValues.map[json["model"]] ?? Model.BOOK_BOOK, 
+    pk: json["pk"],
+    fields: Fields.fromJson(json["fields"]),
+  );
+}
+
+  // factory Book.fromJson(Map<String, dynamic> json) => Book(
+  //       model: modelValues.map[json["model"]]!,
+  //       pk: json["pk"],
+  //       fields: Fields.fromJson(json["fields"]),
+  //     );
 
   Map<String, dynamic> toJson() => {
         "model": modelValues.reverse[model],
@@ -49,13 +62,22 @@ class Fields {
     required this.imageCover,
   });
 
-  factory Fields.fromJson(Map<String, dynamic> json) => Fields(
-        title: json["title"],
-        author: json["author"],
-        publisher: json["publisher"],
-        yearPublication: json["year_publication"],
-        imageCover: json["image_cover"],
-      );
+  // factory Fields.fromJson(Map<String, dynamic> json) => Fields(
+  //       title: json["title"],
+  //       author: json["author"],
+  //       publisher: json["publisher"],
+  //       yearPublication: json["year_publication"],
+  //       imageCover: json["image_cover"],
+  //     );
+  factory Fields.fromJson(Map<String, dynamic> json) {
+    return Fields(
+      title: json["title"],
+      author: json["author"],
+      publisher: json["publisher"],
+      yearPublication: int.parse(json["year_publication"].toString()), // Convert to int here
+      imageCover: json["image_cover"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "title": title,
