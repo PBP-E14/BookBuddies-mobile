@@ -1,4 +1,5 @@
 import 'package:book_buddies_mobile/homepage.dart';
+import 'package:book_buddies_mobile/user/history_books.dart';
 import 'package:book_buddies_mobile/user/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:book_buddies_mobile/forum/screens/show_forums.dart';
@@ -58,6 +59,18 @@ class LeftDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ProfilePage(),
+                  ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.book_rounded),
+            title: const Text('User History Books'),
+            // Bagian redirection ke MyHomePage
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BookHistoryPage(),
                   ));
             },
           ),
