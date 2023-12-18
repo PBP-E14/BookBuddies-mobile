@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key? key}) : super(key: key);
 
-  final List<User> items = [ // edit kalau udah jadi
-
+  final List<User> items = [
+    // edit kalau udah jadi
   ];
 
   @override
@@ -18,7 +18,6 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
       drawer: const LeftDrawer(),
-      );
+    );
   }
 }
-
