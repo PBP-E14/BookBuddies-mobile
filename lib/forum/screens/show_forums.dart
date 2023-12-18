@@ -5,6 +5,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:book_buddies_mobile/forum/models/forum.dart';
 import 'package:book_buddies_mobile/widgets/left_drawer.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+
+import '../../user/models/user.dart';
 
 enum FilterOptions {
   all,
@@ -20,8 +24,22 @@ class ShowForum extends StatefulWidget {
 }
 
 class ShowForumState extends State<ShowForum> {
-  FilterOptions _selectedFilter = FilterOptions
-      .all; // Initially set to show all forums
+  FilterOptions _selectedFilter = FilterOptions.all; // Initially set to show all forums
+  Map<int, User> mapUser = {};
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUsers().then((users) {
+      setState(() {
+        mapUser = users;
+      });
+    }).catchError((error) {
+      print("Error fetching user data: $error");
+      // Handle error appropriately, perhaps set _thisUser to a default value or handle UI accordingly
+    });
+  }
+
   Future<List<Forum>> fetchProduct() async {
     var url = Uri.parse(
         'http://localhost:8000/forum/show_json_forum/');
@@ -69,8 +87,36 @@ class ShowForumState extends State<ShowForum> {
     return listProduct;
   }
 
+  Future<Map<int, User>> fetchUsers() async {
+    var url = Uri.parse(
+        'http://localhost:8000/user/json/');
+    var response = await http.get(
+      url,
+      headers: {"Content-Type": "application/json"},
+    );
+
+    // melakukan decode response menjadi bentuk json
+    var data = jsonDecode(utf8.decode(response.bodyBytes));
+
+    // melakukan konversi data json menjadi object Product
+    List<User> listProduct = [];
+    for (var d in data) {
+      if (d != null) {
+        listProduct.add(User.fromJson(d));
+      }
+    }
+
+    Map<int, User> mapUser = {};
+    for (User user in listProduct) {
+      mapUser[user.pk] = user;
+    }
+    return mapUser;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Forum'),
@@ -137,7 +183,9 @@ class ShowForumState extends State<ShowForum> {
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                // Implement the action when the button is pressed (e.g., add forum)
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => ForumFormPage()
+                                ));
                               },
                               child: Text('Add Forum'),
                             ),
@@ -221,8 +269,8 @@ class ShowForumState extends State<ShowForum> {
                                     ),
                                     const SizedBox(height: 10),
                                     Text(
-                                        "Posted by ${snapshot.data![index]
-                                            .fields.user} at ${snapshot
+                                        "Posted by ${mapUser[snapshot.data![index]
+                                            .fields.user]?.fields.username} at ${snapshot
                                             .data![index]
                                             .fields.createdAt.day.toString()
                                             .padLeft(2, '0')}/${snapshot
