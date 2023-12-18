@@ -76,7 +76,6 @@ class LeftDrawer extends StatelessWidget {
           ),
           ListTile(
             title: const Text('Forum'),
-            // Bagian redirection ke MyHomePage
             onTap: () {
               Navigator.pushReplacement(
                   context,

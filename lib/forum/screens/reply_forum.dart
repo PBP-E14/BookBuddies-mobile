@@ -1,26 +1,27 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:book_buddies_mobile/widgets/left_drawer.dart';
-import 'package:book_buddies_mobile/forum/screens/show_forums.dart';
+import 'package:book_buddies_mobile/forum/screens/show_reply.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:book_buddies_mobile/widgets/cards.dart';
 
 import '../../user/models/user.dart';
 import '../models/forum.dart';
+import '../models/reply.dart';
 
-class ForumFormPage extends StatefulWidget {
-  const ForumFormPage({Key? key}) : super(key: key);
+class ReplyFormPage extends StatefulWidget {
+  final int forumId;
+  const ReplyFormPage({Key? key, required this.forumId}) : super(key: key);
 
   @override
-  State<ForumFormPage> createState() => _ForumFormPageState();
+  State<ReplyFormPage> createState() => _ReplyFormPageState();
 }
 
-List<Forum> forums = [];
+List<Reply> replies = [];
 
-class _ForumFormPageState extends State<ForumFormPage> {
+class _ReplyFormPageState extends State<ReplyFormPage> {
   final _formKey = GlobalKey<FormState>();
-  String _title = "";
   String _content = "";
   User? _thisUser;
 
@@ -71,19 +72,19 @@ class _ForumFormPageState extends State<ForumFormPage> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ShowForum(),
+                    builder: (context) => ReplyPage(forumId: widget.forumId),
                   ));
             },
           ),
         ],
-        title: const Text('Forum'),
+        title: const Text('Reply'),
       ),
       drawer: const LeftDrawer(),
       body: Column(
         children: [
           const SizedBox(height: 20),
           Text(
-            'Create a New Forum',
+            'Create a New Reply',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -104,27 +105,6 @@ class _ForumFormPageState extends State<ForumFormPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min, // Allow the column to occupy minimum space
                   children: [
-                    TextFormField(
-                      decoration: InputDecoration(
-                        hintText: "Title",
-                        labelText: "Title",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      onChanged: (String value) {
-                        setState(() {
-                          _title = value;
-                        });
-                      },
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return "Title tidak boleh kosong!";
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16.0),
                     TextFormField(
                       maxLines: 5,
                       decoration: InputDecoration(
@@ -159,11 +139,11 @@ class _ForumFormPageState extends State<ForumFormPage> {
                         if (_formKey.currentState!.validate()) {
                           // Kirim ke Django dan tunggu respons
                           final response = await request.postJson(
-                            "http://localhost:8000/forum/create-forum-flutter/",
+                            "http://localhost:8000/forum/create-reply-flutter/",
                             jsonEncode(<String, String?>{
                               'thisUser': _thisUser?.pk.toString(),
-                              'title': _title,
                               'content': _content,
+                              'thisForum': widget.forumId.toString(),
                             }),
                           );
                           if (response['status'] == 'success') {
@@ -175,7 +155,7 @@ class _ForumFormPageState extends State<ForumFormPage> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ShowForum(),
+                                builder: (context) => ReplyPage(forumId: widget.forumId),
                               ),
                             );
                           } else {
