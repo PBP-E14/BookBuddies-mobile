@@ -1,5 +1,9 @@
 import 'package:book_buddies_mobile/homepage.dart';
+import 'package:book_buddies_mobile/review/screens/show_review.dart';
+import 'package:book_buddies_mobile/user/history_books.dart';
+import 'package:book_buddies_mobile/user/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:book_buddies_mobile/forum/screens/show_forums.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -25,13 +29,14 @@ class LeftDrawer extends StatelessWidget {
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(10)),
-                Text("Book Buddies!",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Color.fromRGBO(255, 205, 210, 1),
-                    ),
-                    ),
+                Text(
+                  "Book Buddies!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Color.fromRGBO(255, 205, 210, 1),
+                  ),
+                ),
               ],
             ),
           ),
@@ -45,6 +50,51 @@ class LeftDrawer extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) => MyHomePage(),
                   ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.account_circle_rounded),
+            title: const Text('User Profile Page'),
+            // Bagian redirection ke MyHomePage
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfilePage(),
+                  ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.book_rounded),
+            title: const Text('User History Books'),
+            // Bagian redirection ke MyHomePage
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BookHistoryPage(),
+                  ));
+            },
+          ),
+          ListTile(
+            title: const Text('Forum'),
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ShowForum(),
+                  ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.reviews),
+            title: const Text('Review'),
+            onTap: () {
+              // Route menu ke halaman produk
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ShowReview()),
+              );
             },
           ),
         ],
