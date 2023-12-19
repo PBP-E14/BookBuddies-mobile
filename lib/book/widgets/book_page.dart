@@ -38,7 +38,7 @@ class _BookPageState extends State<BookPage> {
     final request = context.read<CookieRequest>();
 
     var response = await request.get(
-      'http://127.0.0.1:8000/book/check-superuser/',
+      'https://irfankamil.pythonanywhere.com/book/check-superuser/',
     );
 
     return CheckSuperuser.fromJson(response);

@@ -15,8 +15,8 @@ class ListRequestBookPage extends StatefulWidget {
 class _ListRequestBookPageState extends State<ListRequestBookPage> {
   Future<List<RequestBook>> fetchRequestBook() async {
     final request = context.read<CookieRequest>();
-    var response =
-        await request.get('http://127.0.0.1:8000/book/get-request-book/');
+    var response = await request
+        .get('https://irfankamil.pythonanywhere.com/book/get-request-book/');
 
     // melakukan konversi data json menjadi object Product
     List<RequestBook> listRequestBook = [];
@@ -33,7 +33,7 @@ class _ListRequestBookPageState extends State<ListRequestBookPage> {
     if (!snapshot.data![index].fields.isAccepted) {
       await http.delete(
         Uri.parse(
-            'http://127.0.0.1:8000/book/cancel-request/${snapshot.data![index].pk}/'),
+            'https://irfankamil.pythonanywhere.com/book/cancel-request/${snapshot.data![index].pk}/'),
       );
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Permintaan berhasil dihapus!"),

@@ -18,7 +18,7 @@ class _ListBookPageState extends State<ListBookPage> {
     final request = context.read<CookieRequest>();
 
     var response = await request.get(
-      'http://127.0.0.1:8000/book/get-book-flutter/',
+      'https://irfankamil.pythonanywhere.com/book/get-book-flutter/',
     );
 
     // melakukan konversi data json menjadi object Product
@@ -30,7 +30,7 @@ class _ListBookPageState extends State<ListBookPage> {
     }
 
     var responseSuperuser = await request.get(
-      'http://127.0.0.1:8000/book/check-superuser/',
+      'https://irfankamil.pythonanywhere.com/book/check-superuser/',
     );
 
     return {
@@ -48,7 +48,7 @@ class _ListBookPageState extends State<ListBookPage> {
       dynamic c = _client;
       c.withCredentials = true;
       await _client.get(Uri.parse(
-          'http://127.0.0.1:8000/book/read-book/${snapshot.data["listBook"]![index].pk}/'));
+          'https://irfankamil.pythonanywhere.com/book/read-book/${snapshot.data["listBook"]![index].pk}/'));
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Ubahan tersimpan!"),
       ));
@@ -65,7 +65,7 @@ class _ListBookPageState extends State<ListBookPage> {
 
     if (!snapshot.data["listBook"]![index].fields.isWishlist) {
       await request.post(
-          'http://127.0.0.1:8000/wishlist/create-ajax/${snapshot.data["listBook"]![index].pk}/',
+          'https://irfankamil.pythonanywhere.com/wishlist/create-ajax/${snapshot.data["listBook"]![index].pk}/',
           {});
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Buku sudah disimpan diwishlist!"),
@@ -80,7 +80,7 @@ class _ListBookPageState extends State<ListBookPage> {
       c.withCredentials = true;
       await _client.delete(
         Uri.parse(
-            'http://127.0.0.1:8000/wishlist/remove_wishlist/${snapshot.data["listBook"]![index].fields.wishlistPk}/'),
+            'https://irfankamil.pythonanywhere.com/wishlist/remove_wishlist/${snapshot.data["listBook"]![index].fields.wishlistPk}/'),
       );
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Buku sudah dihapus dari diwishlist!"),
@@ -99,7 +99,7 @@ class _ListBookPageState extends State<ListBookPage> {
     c.withCredentials = true;
     await _client.delete(
       Uri.parse(
-          'http://127.0.0.1:8000/book/delete-book/${snapshot.data["listBook"]![index].pk}/'),
+          'https://irfankamil.pythonanywhere.com/book/delete-book/${snapshot.data["listBook"]![index].pk}/'),
     );
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("Buku sudah dihapus!"),
