@@ -14,6 +14,7 @@ enum FilterOptions {
   all,
   replied,
   notReplied,
+  yourForum,
 }
 
 class ShowForum extends StatefulWidget {
@@ -26,6 +27,8 @@ class ShowForum extends StatefulWidget {
 class ShowForumState extends State<ShowForum> {
   FilterOptions _selectedFilter = FilterOptions.all; // Initially set to show all forums
   Map<int, User> mapUser = {};
+  User? _thisUser;
+  bool? isAdmin;
 
   @override
   void initState() {
@@ -38,6 +41,44 @@ class ShowForumState extends State<ShowForum> {
       print("Error fetching user data: $error");
       // Handle error appropriately, perhaps set _thisUser to a default value or handle UI accordingly
     });
+    fetchUserData().then((user) {
+      setState(() {
+        _thisUser = user;
+      });
+    }).catchError((error) {
+      print("Error fetching user data: $error");
+      // Handle error appropriately, perhaps set _thisUser to a default value or handle UI accordingly
+    });
+  }
+
+  void deleteForum(int forumId) async {
+    var url = Uri.parse(
+        'http://127.0.0.1:8000/forum/delete-forum-flutter/');
+
+    var response = await http.delete(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'forum_id': forumId,
+      }),
+    );
+
+    if (response.statusCode == 204) {
+      // Handle successful deletion
+      setState(() {
+        fetchProduct(); // Refresh the forum list after deletion
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Forum deleted successfully')),
+      );
+    } else {
+      // Handle error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete Forum: ${response.body}')),
+      );
+    }
   }
 
   Future<List<Forum>> fetchProduct() async {
@@ -83,6 +124,12 @@ class ShowForumState extends State<ShowForum> {
             listProduct.add(forum);
           }
         }
+      case FilterOptions.yourForum:
+        for (Forum forum in listForum) {
+          if (forum.fields.user == _thisUser!.pk) {
+            listProduct.add(forum);
+          }
+        }
     }
     return listProduct;
   }
@@ -113,9 +160,68 @@ class ShowForumState extends State<ShowForum> {
     return mapUser;
   }
 
+  Future<User> fetchUserData() async {
+    final request = context.read<CookieRequest>();
+    var responseJson =
+    await request.get(('http://127.0.0.1:8000/user/fetch_user_data/'));
+
+    if (responseJson != null && responseJson['user_data'] != null) {
+      // Decode the JSON string inside 'user_data' field
+      var userDataJson = json.decode(responseJson['user_data']);
+
+      if (userDataJson.isNotEmpty && userDataJson is List) {
+        // Parse the first user object in the list
+        var user = User.fromJson(userDataJson.first);
+        return user;
+      } else {
+        throw Exception('User data is empty or invalid');
+      }
+    } else {
+      throw Exception('Failed to load user data');
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchUserAdminStatus() async {
+    // Replace 'your_server_url' with your actual server URL
+    var url = Uri.parse('http://127.0.0.1:8000/user/user_admin_status/${_thisUser?.pk}/');
+    // Make a GET request to the server
+    var response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      // If the server returns a successful response, parse the JSON
+      Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      // If the server returns an error response, throw an exception
+      throw Exception('Failed to fetch user admin status');
+    }
+  }
+
+  Future<bool> getUserAdminStatus() async {
+    try {
+      Map<String, dynamic> userData = await fetchUserAdminStatus();
+      bool isAdmin = userData['is_admin'];
+      return isAdmin;
+      // Use the isAdmin value as needed
+    } catch (e) {
+      return false;
+      // Handle errors if any
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    final isSmallScreen = MediaQuery.of(context).size.width < 600; // Define a threshold for small screens
+
+    getUserAdminStatus().then((admin) {
+      setState(() {
+        isAdmin = admin;
+      });
+    }).catchError((error) {
+      print("Error fetching user data: $error");
+      // Handle error appropriately, perhaps set _thisUser to a default value or handle UI accordingly
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -124,40 +230,70 @@ class ShowForumState extends State<ShowForum> {
       drawer: const LeftDrawer(),
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Radio(
-                value: FilterOptions.all,
-                groupValue: _selectedFilter,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedFilter = value as FilterOptions;
-                  });
-                },
-              ),
-              const Text('All'),
-              Radio(
-                value: FilterOptions.replied,
-                groupValue: _selectedFilter,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedFilter = value as FilterOptions;
-                  });
-                },
-              ),
-              const Text('Replied'),
-              Radio(
-                value: FilterOptions.notReplied,
-                groupValue: _selectedFilter,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedFilter = value as FilterOptions;
-                  });
-                },
-              ),
-              const Text('No Reply'),
-            ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Forum Discussion',
+                  style: TextStyle(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Radio(
+                      value: FilterOptions.all,
+                      groupValue: _selectedFilter,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedFilter = value as FilterOptions;
+                        });
+                      },
+                    ),
+                    const Text('All'),
+                    Radio(
+                      value: FilterOptions.replied,
+                      groupValue: _selectedFilter,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedFilter = value as FilterOptions;
+                        });
+                      },
+                    ),
+                    const Text('Replied'),
+                    Radio(
+                      value: FilterOptions.notReplied,
+                      groupValue: _selectedFilter,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedFilter = value as FilterOptions;
+                        });
+                      },
+                    ),
+                    const Text('No Reply'),
+                    Radio(
+                      value: FilterOptions.yourForum,
+                      groupValue: _selectedFilter,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedFilter = value as FilterOptions;
+                        });
+                      },
+                    ),
+                    const Text('Your Forum'),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const Divider(
+            thickness: 1,
+            // Adjust the thickness as needed
+            color: Colors
+                .black, // Define the color of the divider
           ),
           Expanded(
             child: FutureBuilder(
@@ -222,7 +358,7 @@ class ShowForumState extends State<ShowForum> {
                         }
                         else {
                           return Container(
-                            height: 150,
+                            height: 160,
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8.0),
                             decoration: BoxDecoration(
@@ -259,6 +395,18 @@ class ShowForumState extends State<ShowForum> {
                                         ),
                                         Text("Total Reply: ${snapshot
                                             .data![index].fields.totalReply}"),
+                                        const SizedBox(width: 10, height: 0,),
+                                        Visibility(
+                                          visible: isAdmin!,
+                                          child: IconButton(
+                                            icon: Icon(Icons.delete),
+                                            onPressed: () {
+                                              setState(() {
+                                                deleteForum(snapshot.data![index].pk);
+                                              });
+                                            },
+                                          ),
+                                        ),
                                       ],
                                     ),
                                     const Divider(
