@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import '../widgets/left_drawer.dart';
@@ -50,7 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<User> fetchUserData() async {
     final request = context.read<CookieRequest>();
     var responseJson =
-        await request.get(('http://127.0.0.1:8000/user/fetch_user_data/'));
+        await request.get(('https://irfankamil.pythonanywhere.com/user/fetch_user_data/'));
 
     if (responseJson != null && responseJson['user_data'] != null) {
       // Decode the JSON string inside 'user_data' field
@@ -114,7 +113,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
       // Send data to Django backend using postJson
       final response = await request.postJson(
-        'http://127.0.0.1:8000/user/update_profile_flutter/',
+        'https://irfankamil.pythonanywhere.com/user/update_profile_flutter/',
         jsonEncode(userData),
       );
 
@@ -123,13 +122,11 @@ class _ProfilePageState extends State<ProfilePage> {
         // Handle successful update
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Profile updated successfully.")));
-        print("Profile updated successfully.");
       } else {
         // Handle failed update
         String errorMessage = response['error'] ?? 'Unknown error occurred.';
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Failed to update profile: $errorMessage")));
-        print("Failed to update profile: $errorMessage");
       }
     }
   }
