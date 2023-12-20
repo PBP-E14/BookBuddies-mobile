@@ -22,7 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController bioController = TextEditingController();
-  String selectedGender = ''; // Masi default
+  String selectedGender = 'Other'; // Default value 'Other' if null
 
   @override
   void initState() {
@@ -35,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
         phoneNumberController.text = userData.fields.phoneNumber ?? '';
         addressController.text = userData.fields.address ?? '';
         bioController.text = userData.fields.bio ?? '';
-        selectedGender = userData.fields.gender ?? '';
+        selectedGender = userData.fields.gender ?? 'Other';
       });
     });
   }
@@ -48,18 +48,14 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<User> fetchUserData() async {
-    final response = await http.get(Uri.parse(
-        'https://irfankamil.pythonanywhere.com/user/fetch_user_data/'));
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    final request = context.read<CookieRequest>();
+    var responseJson =
+        await request.get(('http://127.0.0.1:8000/user/fetch_user_data/'));
 
-    if (response.statusCode == 200) {
-      var responseData = json.decode(response.body);
-
+    if (responseJson != null && responseJson['user_data'] != null) {
       // Decode the JSON string inside 'user_data' field
-      var userDataJson = json.decode(responseData['user_data']);
+      var userDataJson = json.decode(responseJson['user_data']);
 
-      // Check if the userDataJson is not empty and is a list
       if (userDataJson.isNotEmpty && userDataJson is List) {
         // Parse the first user object in the list
         var user = User.fromJson(userDataJson.first);
@@ -104,6 +100,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> updateProfile(BuildContext context) async {
+    final request = context.read<CookieRequest>();
+
     if (_formKey.currentState!.validate()) {
       // Collect data from the form fields
       var userData = {
@@ -114,32 +112,24 @@ class _ProfilePageState extends State<ProfilePage> {
         'bio': bioController.text,
       };
 
-      // Send data to Django backend
-      final response = await http.post(
-        Uri.parse(
-            'https://irfankamil.pythonanywhere.com/user/update_profile_flutter/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        body: jsonEncode(userData),
+      // Send data to Django backend using postJson
+      final response = await request.postJson(
+        'http://127.0.0.1:8000/user/update_profile_flutter/',
+        jsonEncode(userData),
       );
 
       // Handle the response
-      if (response.statusCode == 200) {
-        var responseBody = jsonDecode(response.body);
-        if (responseBody['success']) {
-          // Handle successful update
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Profile updated successfully.")));
-          print("Profile updated successfully.");
-        } else {
-          // Handle failed update
-          print("Failed to update profile.");
-        }
+      if (response['success'] == true) {
+        // Handle successful update
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Profile updated successfully.")));
+        print("Profile updated successfully.");
       } else {
-        // Handle server error
-        print("Server error occurred.");
+        // Handle failed update
+        String errorMessage = response['error'] ?? 'Unknown error occurred.';
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Failed to update profile: $errorMessage")));
+        print("Failed to update profile: $errorMessage");
       }
     }
   }
@@ -183,11 +173,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: DropdownButtonFormField<String>(
                         value: selectedGender,
                         onChanged: (String? newValue) {
-                          if (newValue != null) {
-                            setState(() {
-                              selectedGender = newValue;
-                            });
-                          }
+                          setState(() {
+                            selectedGender = newValue ??
+                                'Other'; // Default to 'Other' if new value is null
+                          });
                         },
                         items: <String>['Male', 'Female', 'Other']
                             .map<DropdownMenuItem<String>>((String value) {

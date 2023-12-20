@@ -69,8 +69,8 @@ class _LoginPageState extends State<LoginPage> {
 
                 // Cek kredensial
                 // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
-                final response = await request.login(
-                    "https://irfankamil.pythonanywhere.com/auth/login/", {
+                final response =
+                    await request.login("http://127.0.0.1:8000/auth/login/", {
                   'username': username,
                   'password': password,
                 });
