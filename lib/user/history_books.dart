@@ -13,7 +13,7 @@ class BookHistoryPage extends StatelessWidget {
 
   Future<List<Book>> fetchBooksDetails(CookieRequest request) async {
     List<Book> books = [];
-    var bookDataJson = await request.get('http://127.0.0.1:8000/book/get-read-book/');
+    var bookDataJson = await request.get('https://irfankamil.pythonanywhere.com/book/get-read-book/');
     print('Received JSON: $bookDataJson');
 
     for (var bookJson in bookDataJson) {

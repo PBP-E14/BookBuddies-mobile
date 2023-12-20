@@ -41,7 +41,7 @@ class _ReplyFormPageState extends State<ReplyFormPage> {
   Future<User> fetchUserData() async {
     final request = context.read<CookieRequest>();
     var responseJson =
-    await request.get(('http://127.0.0.1:8000/user/fetch_user_data/'));
+    await request.get(('https://irfankamil.pythonanywhere.com/user/fetch_user_data/'));
 
     if (responseJson != null && responseJson['user_data'] != null) {
       // Decode the JSON string inside 'user_data' field
@@ -139,7 +139,7 @@ class _ReplyFormPageState extends State<ReplyFormPage> {
                         if (_formKey.currentState!.validate()) {
                           // Kirim ke Django dan tunggu respons
                           final response = await request.postJson(
-                            "http://localhost:8000/forum/create-reply-flutter/",
+                            "https://irfankamil.pythonanywhere.com/forum/create-reply-flutter/",
                             jsonEncode(<String, String?>{
                               'thisUser': _thisUser?.pk.toString(),
                               'content': _content,
