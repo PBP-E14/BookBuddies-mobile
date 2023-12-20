@@ -68,7 +68,6 @@ class _LoginPageState extends State<LoginPage> {
                 String password = _passwordController.text;
 
                 // Cek kredensial
-                // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
                 final response =
                     await request.login("https://irfankamil.pythonanywhere.com/auth/login/", {
                   'username': username,
