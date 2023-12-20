@@ -48,20 +48,41 @@ class _ReplyPageState extends State<ReplyPage> {
       print("Error fetching user data: $error");
       // Handle error appropriately, perhaps set _thisUser to a default value or handle UI accordingly
     });
-    getUserAdminStatus().then((users) {
+  }
+
+  void deleteReply(int replyId) async {
+    var url = Uri.parse(
+        'http://127.0.0.1:8000/forum/delete-replies-flutter/');
+
+    var response = await http.delete(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'reply_id': replyId,
+      }),
+    );
+
+    if (response.statusCode == 204) {
+      // Handle successful deletion
       setState(() {
-        isAdmin = users;
+        replies = fetchReplies(); // Refresh the replies list after deletion
       });
-    }).catchError((error) {
-      print("Error fetching user data: $error");
-      // Handle error appropriately, perhaps set _thisUser to a default value or handle UI accordingly
-    });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Reply deleted successfully')),
+      );
+    } else {
+      // Handle error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete reply: ${response.body}')),
+      );
+    }
   }
 
   Future<Map<String, dynamic>> fetchUserAdminStatus() async {
     // Replace 'your_server_url' with your actual server URL
-    var url = Uri.parse('https://your_server_url/user_admin_status');
-
+    var url = Uri.parse('http://127.0.0.1:8000/user/user_admin_status/${_thisUser?.pk}/');
     // Make a GET request to the server
     var response = await http.get(url);
 
@@ -211,6 +232,14 @@ class _ReplyPageState extends State<ReplyPage> {
       body: FutureBuilder<List<Reply>>(
         future: replies,
         builder: (context, snapshot) {
+          getUserAdminStatus().then((admin) {
+            setState(() {
+              isAdmin = admin;
+            });
+          }).catchError((error) {
+            print("Error fetching user data: $error");
+            // Handle error appropriately, perhaps set _thisUser to a default value or handle UI accordingly
+          });
           if (snapshot.hasData) {
             List<Reply> replyList = snapshot.data!;
             return SingleChildScrollView(
@@ -317,7 +346,27 @@ class _ReplyPageState extends State<ReplyPage> {
                               trailing: IconButton(
                                 icon: Icon(Icons.delete),
                                 onPressed: () {
-                                  // Logic to delete a reply goes here
+                                  setState(() {
+                                    deleteReply(replyList[index].pk);
+                                  });
+                                },
+                              ),
+                            ),
+                          );
+                        } else if (isAdmin!) {
+                          return Card(
+                            margin: EdgeInsets.symmetric(vertical: 8.0),
+                            child: ListTile(
+                              title: Text(replyList[index].fields.content),
+                              subtitle: Text(
+                                  'Replied by: ${mapUser[replyList[index].fields.user]?.fields.username} - Replied on: ${replyList[index].fields.createdAt.day.toString().padLeft(2, '0')}/${replyList[index].fields.createdAt.month.toString().padLeft(2, '0')}/${replyList[index].fields.createdAt.year.toString().padLeft(4, '0')}'
+                              ),
+                              trailing: IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () {
+                                  setState(() {
+                                    deleteReply(replyList[index].pk);
+                                  });
                                 },
                               ),
                             ),
