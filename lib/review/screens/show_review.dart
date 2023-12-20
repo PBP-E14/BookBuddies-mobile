@@ -48,7 +48,8 @@ class _ShowReviewState extends State<ShowReview> {
   }
 
   Future<List<Review>> fetchProduct() async {
-    var url = Uri.parse('http://127.0.0.1:8000/review/show_json_review/');
+    var url = Uri.parse(
+        'https://irfankamil.pythonanywhere.com/review/show_json_review/');
     var response = await http.get(
       url,
       headers: {"Content-Type": "application/json"},
@@ -110,8 +111,8 @@ class _ShowReviewState extends State<ShowReview> {
 
   Future<User> fetchUserData() async {
     final request = context.read<CookieRequest>();
-    var responseJson =
-        await request.get(('http://127.0.0.1:8000/user/fetch_user_data/'));
+    var responseJson = await request
+        .get(('https://irfankamil.pythonanywhere.com/user/fetch_user_data/'));
 
     if (responseJson != null && responseJson['user_data'] != null) {
       // Decode the JSON string inside 'user_data' field
