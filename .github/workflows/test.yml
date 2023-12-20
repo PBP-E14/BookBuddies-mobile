@@ -17,10 +17,13 @@ jobs:
               uses: flutter-actions/setup-flutter@v2
               with:
                   channel: stable
-                  version: 3.13.9
+                  version: 3.0.2
 
             - name: Install dependencies
               run: flutter pub get
+
+            - name: Analyze project source
+              run: dart analyze
 
             - name: Run tests
               run: flutter test
