@@ -16,6 +16,7 @@ class BookHistoryPage extends StatelessWidget {
     var bookDataJson = await request.get('https://irfankamil.pythonanywhere.com/book/get-read-book/');
 
     for (var bookJson in bookDataJson) {
+      print('Parsing book: $bookJson');
       var book = Book.fromJson(bookJson); // Ensure this method matches your JSON structure
       books.add(book);
     }

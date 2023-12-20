@@ -52,7 +52,7 @@ class _ReplyPageState extends State<ReplyPage> {
 
   void deleteReply(int replyId) async {
     var url = Uri.parse(
-        'http://127.0.0.1:8000/forum/delete-replies-flutter/');
+        'https://irfankamil.pythonanywhere.com/forum/delete-replies-flutter/');
 
     var response = await http.delete(
       url,
@@ -82,7 +82,7 @@ class _ReplyPageState extends State<ReplyPage> {
 
   Future<Map<String, dynamic>> fetchUserAdminStatus() async {
     // Replace 'your_server_url' with your actual server URL
-    var url = Uri.parse('http://127.0.0.1:8000/user/user_admin_status/${_thisUser?.pk}/');
+    var url = Uri.parse('https://irfankamil.pythonanywhere.com/user/user_admin_status/${_thisUser?.pk}/');
     // Make a GET request to the server
     var response = await http.get(url);
 
@@ -111,7 +111,7 @@ class _ReplyPageState extends State<ReplyPage> {
   Future<User> fetchUserData() async {
     final request = context.read<CookieRequest>();
     var responseJson =
-    await request.get(('http://127.0.0.1:8000/user/fetch_user_data/'));
+    await request.get(('https://irfankamil.pythonanywhere.com/user/fetch_user_data/'));
 
     if (responseJson != null && responseJson['user_data'] != null) {
       // Decode the JSON string inside 'user_data' field
@@ -131,7 +131,7 @@ class _ReplyPageState extends State<ReplyPage> {
 
   Future<Map<int, User>> fetchUsers() async {
     var url = Uri.parse(
-        'http://localhost:8000/user/json/');
+        'https://irfankamil.pythonanywhere.com/user/json/');
     var response = await http.get(
       url,
       headers: {"Content-Type": "application/json"},
@@ -157,7 +157,7 @@ class _ReplyPageState extends State<ReplyPage> {
 
   Future<Forum?> fetchForum() async {
     var url = Uri.parse(
-        'http://localhost:8000/forum/show_json_forum/');
+        'https://irfankamil.pythonanywhere.com/forum/show_json_forum/');
     var response = await http.get(
       url,
       headers: {"Content-Type": "application/json"},
@@ -184,7 +184,7 @@ class _ReplyPageState extends State<ReplyPage> {
 
   Future<List<Reply>> fetchReplies() async {
     var url = Uri.parse(
-        'http://localhost:8000/forum/show_json_reply/');
+        'https://irfankamil.pythonanywhere.com/forum/show_json_reply/');
     var response = await http.get(
       url,
       headers: {"Content-Type": "application/json"},
