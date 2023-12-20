@@ -14,7 +14,6 @@ class BookHistoryPage extends StatelessWidget {
   Future<List<Book>> fetchBooksDetails(CookieRequest request) async {
     List<Book> books = [];
     var bookDataJson = await request.get('https://irfankamil.pythonanywhere.com/book/get-read-book/');
-    print('Received JSON: $bookDataJson');
 
     for (var bookJson in bookDataJson) {
       print('Parsing book: $bookJson');
@@ -26,7 +25,7 @@ class BookHistoryPage extends StatelessWidget {
 
   Future<User> fetchUserData(BuildContext context) async {
     final request = context.read<CookieRequest>();
-    var response = await request.get('http://127.0.0.1:8000/user/fetch_user_data/');
+    var response = await request.get('https://irfankamil.pythonanywhere.com/user/fetch_user_data/');
 
     // Check if the response was successful
     if (response.statusCode == 200) {
