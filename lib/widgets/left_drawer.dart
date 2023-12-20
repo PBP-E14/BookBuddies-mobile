@@ -78,6 +78,7 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.forum_rounded),
             title: const Text('Forum'),
             onTap: () {
               Navigator.pushReplacement(
@@ -88,6 +89,7 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.star_border_purple500_rounded),
             title: const Text('Wishlist'),
             // Bagian redirection ke MyHomePage
             onTap: () {
