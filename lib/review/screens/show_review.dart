@@ -143,7 +143,7 @@ class _ShowReviewState extends State<ShowReview> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: ToggleButtons(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(18),
                 children: [
                   Container(
                       width: 100,
@@ -212,7 +212,7 @@ class _ShowReviewState extends State<ShowReview> {
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -223,7 +223,7 @@ class _ShowReviewState extends State<ShowReview> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 4),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -235,30 +235,34 @@ class _ShowReviewState extends State<ShowReview> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Spacer(),
-                                  Text(
-                                    "Created by: ",
-                                    style: const TextStyle(
-                                      fontSize: 14.0,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  Text(
-                                    "${mapUser[snapshot.data![index].fields.user]?.fields.username}",
-                                    style: const TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        "Created by: ",
+                                        style: const TextStyle(
+                                          fontSize: 14.0,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${mapUser[snapshot.data![index].fields.user]?.fields.username}",
+                                        style: const TextStyle(
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 6),
                               Container(
                                 margin: const EdgeInsets.symmetric(vertical: 8),
                                 height: 2,
                                 color: Colors.grey, // Set the divider color
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 6),
                               Text(
                                 "${snapshot.data![index].fields.review}",
                                 style: TextStyle(fontSize: 16),

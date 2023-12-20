@@ -28,8 +28,6 @@ class _ReviewFormState extends State<ReviewForm> {
             'Add Review',
           ),
         ),
-        backgroundColor: Colors.redAccent,
-        foregroundColor: Colors.white,
       ),
       drawer: const LeftDrawer(),
       body: Form(
