@@ -22,7 +22,7 @@ class LeftDrawer extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  'My Wardrobe',
+                  'Book Buddies',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 30,
@@ -32,7 +32,7 @@ class LeftDrawer extends StatelessWidget {
                 ),
                 Padding(padding: EdgeInsets.all(10)),
                 Text(
-                  "Book Buddies!",
+                  "Your go to book app!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,

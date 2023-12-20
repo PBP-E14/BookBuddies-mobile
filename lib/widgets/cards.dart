@@ -1,6 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:book_buddies_mobile/book/widgets/book_page.dart';
+import 'package:book_buddies_mobile/forum/screens/show_forums.dart';
+import 'package:book_buddies_mobile/review/screens/show_review.dart';
+import 'package:book_buddies_mobile/user/history_books.dart';
 import 'package:book_buddies_mobile/user/profile.dart';
+import 'package:book_buddies_mobile/wishlist/screens/show_wishlist.dart';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -13,16 +18,16 @@ class Item {
   Item(this.name, this.icon);
 }
 
-class Card extends StatelessWidget {
+class BookBuddiesCard extends StatelessWidget {
   final Item item;
 
-  const Card(this.item, {super.key}); // Constructor
+  const BookBuddiesCard(this.item, {super.key}); // Constructor
 
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     return Material(
-      color: Colors.indigo,
+      color: Colors.redAccent,
       child: InkWell(
         // Area responsive terhadap sentuhan
         onTap: () async {
@@ -36,6 +41,21 @@ class Card extends StatelessWidget {
           if (item.name == "User Profile Page") {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const ProfilePage()));
+          } else if (item.name == "Book Page") {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const BookPage()));
+          } else if (item.name == "User History Books") {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => BookHistoryPage()));
+          } else if (item.name == "Forum") {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const ShowForum()));
+          } else if (item.name == "Wishlist") {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const ShowWishlist()));
+          } else if (item.name == "Review") {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const ShowReview()));
           } else if (item.name == "Logout") {
             final response = await request.logout(
                 "https://irfankamil.pythonanywhere.com/auth/logout/"); // Ganti URL
