@@ -66,4 +66,5 @@ password: admin
 
 Alur pengintegrasian dengan web service untuk terhubung dengan aplikasi web yang sudah dibuat saat Proyek Tengah Semester.
 Link repository PTS: https://github.com/PBP-E14/book-buddies.git
+
 Link berita acara: https://docs.google.com/spreadsheets/d/1L2IODCXMlKOOJAezNx_5KmeWsHWZBbtfl_9e7x5kuXI/edit?usp=sharing
