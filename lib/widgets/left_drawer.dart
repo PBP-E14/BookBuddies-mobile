@@ -4,6 +4,7 @@ import 'package:book_buddies_mobile/user/history_books.dart';
 import 'package:book_buddies_mobile/user/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:book_buddies_mobile/forum/screens/show_forums.dart';
+import 'package:book_buddies_mobile/wishlist/screens/show_wishlist.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -83,6 +84,17 @@ class LeftDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ShowForum(),
+                  ));
+            },
+          ),
+          ListTile(
+            title: const Text('Wishlist'),
+            // Bagian redirection ke MyHomePage
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ShowWishlist(),
                   ));
             },
           ),
