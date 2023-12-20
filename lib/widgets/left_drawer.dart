@@ -1,3 +1,4 @@
+import 'package:book_buddies_mobile/book/widgets/book_page.dart';
 import 'package:book_buddies_mobile/homepage.dart';
 import 'package:book_buddies_mobile/review/screens/show_review.dart';
 import 'package:book_buddies_mobile/user/history_books.dart';
@@ -50,6 +51,18 @@ class LeftDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MyHomePage(),
+                  ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.menu_book_rounded),
+            title: const Text('Book Page'),
+            // Bagian redirection ke ListBookPage
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const BookPage(),
                   ));
             },
           ),

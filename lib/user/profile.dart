@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import '../widgets/left_drawer.dart';
@@ -35,21 +34,22 @@ class _ProfilePageState extends State<ProfilePage> {
         phoneNumberController.text = userData.fields.phoneNumber ?? '';
         addressController.text = userData.fields.address ?? '';
         bioController.text = userData.fields.bio ?? '';
-        selectedGender = userData.fields.gender ?? 'Other'; 
+        selectedGender = userData.fields.gender ?? 'Other';
       });
     });
   }
 
   String formatDateTime(DateTime? dateTime) {
     if (dateTime == null) {
-      return ""; 
+      return "";
     }
     return "${dateTime.year.toString().padLeft(4, '0')}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
   }
 
   Future<User> fetchUserData() async {
-    final request = context.read<CookieRequest>(); 
-    var responseJson = await request.get(('http://127.0.0.1:8000/user/fetch_user_data/'));
+    final request = context.read<CookieRequest>();
+    var responseJson =
+        await request.get(('https://irfankamil.pythonanywhere.com/user/fetch_user_data/'));
 
     if (responseJson != null && responseJson['user_data'] != null) {
       // Decode the JSON string inside 'user_data' field
@@ -67,35 +67,35 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-
   Future<void> _selectDate(BuildContext context) async {
-      DateTime initialDate = DateTime.now();
+    DateTime initialDate = DateTime.now();
 
-      // Attempt to parse the current date from the controller, if available
-      try {
-        if (_dateController.text.isNotEmpty) {
-          List<String> parts = _dateController.text.split('-');
-          initialDate = DateTime(int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2]));
-        }
-      } catch (e) {
-        // Handle error or invalid date format
-        // You might want to log this error or set a default date
+    // Attempt to parse the current date from the controller, if available
+    try {
+      if (_dateController.text.isNotEmpty) {
+        List<String> parts = _dateController.text.split('-');
+        initialDate = DateTime(
+            int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2]));
       }
+    } catch (e) {
+      // Handle error or invalid date format
+      // You might want to log this error or set a default date
+    }
 
-      // Show the date picker dialog
-      final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: initialDate,
-        firstDate: DateTime(1900),
-        lastDate: DateTime.now(),
-      );
+    // Show the date picker dialog
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
 
-      // Check if a date was picked and update the controller text
-      if (picked != null) {
-        setState(() {
-          _dateController.text = formatDateTime(picked);
-        });
-      }
+    // Check if a date was picked and update the controller text
+    if (picked != null) {
+      setState(() {
+        _dateController.text = formatDateTime(picked);
+      });
+    }
   }
 
   Future<void> updateProfile(BuildContext context) async {
@@ -113,7 +113,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
       // Send data to Django backend using postJson
       final response = await request.postJson(
-        'http://127.0.0.1:8000/user/update_profile_flutter/',
+        'https://irfankamil.pythonanywhere.com/user/update_profile_flutter/',
         jsonEncode(userData),
       );
 
@@ -121,16 +121,12 @@ class _ProfilePageState extends State<ProfilePage> {
       if (response['success'] == true) {
         // Handle successful update
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Profile updated successfully."))
-        );
-        print("Profile updated successfully.");
+            SnackBar(content: Text("Profile updated successfully.")));
       } else {
         // Handle failed update
         String errorMessage = response['error'] ?? 'Unknown error occurred.';
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to update profile: $errorMessage"))
-        );
-        print("Failed to update profile: $errorMessage");
+            SnackBar(content: Text("Failed to update profile: $errorMessage")));
       }
     }
   }
@@ -138,7 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text('User Profile Page'),
@@ -154,14 +150,15 @@ class _ProfilePageState extends State<ProfilePage> {
               const Center(
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundImage: AssetImage('assets/images/default_profile_picture.jpeg'),
+                  backgroundImage:
+                      AssetImage('assets/images/default_profile_picture.jpeg'),
                 ),
               ),
               SizedBox(height: 10),
               Center(child: Text(_username, style: TextStyle(fontSize: 20))),
               SizedBox(height: 5),
               Center(child: Text(_email, style: TextStyle(color: Colors.grey))),
-              
+
               // Profile Form
               Form(
                 key: _formKey,
@@ -174,7 +171,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         value: selectedGender,
                         onChanged: (String? newValue) {
                           setState(() {
-                            selectedGender = newValue ?? 'Other'; // Default to 'Other' if new value is null
+                            selectedGender = newValue ??
+                                'Other'; // Default to 'Other' if new value is null
                           });
                         },
                         items: <String>['Male', 'Female', 'Other']
